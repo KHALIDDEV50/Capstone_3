@@ -6,7 +6,6 @@ import com.example.rafeeq.DTO.HealthAssessmentReadinessResponseDTO;
 import com.example.rafeeq.DTO.HealthInsightResponseDTO;
 import com.example.rafeeq.DTO.HealthRiskResponseDTO;
 import com.example.rafeeq.DTO.HealthSummaryResponseDTO;
-import com.example.rafeeq.Service.DoctorService;
 import com.example.rafeeq.Service.HealthAnalysisService;
 
 import lombok.AllArgsConstructor;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 public class HealthAnalysisController {
 
     private final HealthAnalysisService healthAnalysisService;
-    private final DoctorService doctorService;
 
     // ==================== Health Risks ====================
 
@@ -68,7 +66,7 @@ public class HealthAnalysisController {
             @PathVariable Integer userId) {
 
         return ResponseEntity.status(200)
-                .body(doctorService.getDoctorFollowUp(userId));
+                .body(healthAnalysisService.getDoctorFollowUp(userId));
     }
 
     // ==================== Doctor Appointment Eligibility ====================
@@ -78,6 +76,6 @@ public class HealthAnalysisController {
             @PathVariable Integer userId) {
 
         return ResponseEntity.status(200)
-                .body(doctorService.checkEligibility(userId));
+                .body(healthAnalysisService.checkEligibility(userId));
     }
 }
