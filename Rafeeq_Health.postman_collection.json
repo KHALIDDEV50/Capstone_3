@@ -1,0 +1,1123 @@
+{
+  "info": {
+    "name": "Rafeeq Health API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Users",
+      "item": [
+        {
+          "name": "Add User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/users/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "users",
+                "add"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Ahmed Alhamami\",\n  \"email\": \"ahmed@example.com\",\n  \"phone\": \"966501234567\",\n  \"password\": \"Password123\",\n  \"dateOfBirth\": \"1998-05-10\",\n  \"gender\": \"MALE\",\n  \"whatsappOptIn\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Add User 2",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/users/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "users",
+                "add"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Sara Ali\",\n  \"email\": \"sara@example.com\",\n  \"phone\": \"966551112233\",\n  \"password\": \"Password123\",\n  \"dateOfBirth\": \"1995-02-20\",\n  \"gender\": \"FEMALE\",\n  \"whatsappOptIn\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/users/get",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "users",
+                "get"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/users/get/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "users",
+                "get",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/users/update/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "users",
+                "update",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Ahmed M. Alhamami\",\n  \"email\": \"ahmed@example.com\",\n  \"phone\": \"966501234567\",\n  \"password\": \"Password123\",\n  \"dateOfBirth\": \"1998-05-10\",\n  \"gender\": \"MALE\",\n  \"whatsappOptIn\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "✗ Duplicate Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/users/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "users",
+                "add"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Ahmed Alhamami\",\n  \"email\": \"ahmed@example.com\",\n  \"phone\": \"966509999999\",\n  \"password\": \"Password123\",\n  \"dateOfBirth\": \"1998-05-10\",\n  \"gender\": \"MALE\",\n  \"whatsappOptIn\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Health Profiles",
+      "item": [
+        {
+          "name": "Add Health Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/health-profiles/add/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "health-profiles",
+                "add",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"heightCm\": 175,\n  \"activityLevel\": \"LIGHT\",\n  \"conditions\": [\n    \"DIABETES_T2\",\n    \"HYPERTENSION\"\n  ],\n  \"exerciseRisk\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get All Health Profiles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/health-profiles/get",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "health-profiles",
+                "get"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Health Profile By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/health-profiles/get/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "health-profiles",
+                "get",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Health Profile By User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/health-profiles/get/user/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "health-profiles",
+                "get",
+                "user",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Health Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/health-profiles/update/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "health-profiles",
+                "update",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"heightCm\": 175,\n  \"activityLevel\": \"MODERATE\",\n  \"conditions\": [\n    \"DIABETES_T2\",\n    \"HYPERTENSION\",\n    \"HIGH_CHOLESTEROL\"\n  ],\n  \"exerciseRisk\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "✗ Second Profile Same User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/health-profiles/add/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "health-profiles",
+                "add",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"heightCm\": 175,\n  \"activityLevel\": \"LIGHT\",\n  \"conditions\": [\n    \"DIABETES_T2\",\n    \"HYPERTENSION\"\n  ],\n  \"exerciseRisk\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "✗ Diabetes T1 + T2",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/health-profiles/add/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "health-profiles",
+                "add",
+                "2"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"heightCm\": 175,\n  \"activityLevel\": \"LIGHT\",\n  \"conditions\": [\n    \"DIABETES_T1\",\n    \"DIABETES_T2\"\n  ],\n  \"exerciseRisk\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "✗ Invalid Enum",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/health-profiles/add/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "health-profiles",
+                "add",
+                "2"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"heightCm\": 175,\n  \"activityLevel\": \"VERY_ACTIVE\",\n  \"conditions\": [\n    \"DIABETES_T2\",\n    \"HYPERTENSION\"\n  ],\n  \"exerciseRisk\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "✗ User Not Found",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/health-profiles/add/999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "health-profiles",
+                "add",
+                "999"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"heightCm\": 175,\n  \"activityLevel\": \"LIGHT\",\n  \"conditions\": [\n    \"DIABETES_T2\",\n    \"HYPERTENSION\"\n  ],\n  \"exerciseRisk\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Vital Signs",
+      "item": [
+        {
+          "name": "Add Blood Pressure",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/vital-signs/add/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "vital-signs",
+                "add",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"BLOOD_PRESSURE\",\n  \"valuePrimary\": 135,\n  \"valueSecondary\": 85,\n  \"measuredAt\": \"2026-10-04T08:30:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Add Fasting Glucose",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/vital-signs/add/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "vital-signs",
+                "add",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"GLUCOSE\",\n  \"valuePrimary\": 142,\n  \"context\": \"FASTING\",\n  \"measuredAt\": \"2026-10-04T07:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Add Weight",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/vital-signs/add/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "vital-signs",
+                "add",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"WEIGHT\",\n  \"valuePrimary\": 84.5,\n  \"measuredAt\": \"2026-10-04T07:05:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get All Vital Signs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/vital-signs/get",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "vital-signs",
+                "get"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Vital Sign By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/vital-signs/get/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "vital-signs",
+                "get",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Vital Signs By User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/vital-signs/get/user/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "vital-signs",
+                "get",
+                "user",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Vital Sign",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/vital-signs/update/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "vital-signs",
+                "update",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"BLOOD_PRESSURE\",\n  \"valuePrimary\": 125,\n  \"valueSecondary\": 78,\n  \"measuredAt\": \"2026-10-04T08:30:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "✗ BP Without Diastolic",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/vital-signs/add/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "vital-signs",
+                "add",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"BLOOD_PRESSURE\",\n  \"valuePrimary\": 130,\n  \"measuredAt\": \"2026-10-04T09:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "✗ Glucose Without Context",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/vital-signs/add/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "vital-signs",
+                "add",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"GLUCOSE\",\n  \"valuePrimary\": 110,\n  \"measuredAt\": \"2026-10-04T09:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "✗ Future Date",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/vital-signs/add/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "vital-signs",
+                "add",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"WEIGHT\",\n  \"valuePrimary\": 84,\n  \"measuredAt\": \"2030-01-01T09:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "✗ Invalid ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/vital-signs/get/abc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "vital-signs",
+                "get",
+                "abc"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Nutrition Plans",
+      "item": [
+        {
+          "name": "Add Nutrition Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/nutrition-plans/add/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "nutrition-plans",
+                "add",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"name\": \"Oats\",\n      \"category\": \"GRAINS\",\n      \"recommendation\": \"PREFER\",\n      \"reason\": \"High in soluble fiber\"\n    },\n    {\n      \"name\": \"Pickles\",\n      \"category\": \"SNACKS\",\n      \"recommendation\": \"AVOID\",\n      \"reason\": \"High sodium raises blood pressure\"\n    },\n    {\n      \"name\": \"Dates\",\n      \"category\": \"FRUITS\",\n      \"recommendation\": \"MODERATE\",\n      \"reason\": \"Natural sugar, keep portions small\"\n    }\n  ],\n  \"summary\": \"Focus on fiber and lean protein, limit salt and refined carbs.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Get All Nutrition Plans",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/nutrition-plans/get",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "nutrition-plans",
+                "get"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Nutrition Plan By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/nutrition-plans/get/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "nutrition-plans",
+                "get",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Nutrition Plan By User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/nutrition-plans/get/user/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "nutrition-plans",
+                "get",
+                "user",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Nutrition Plan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/nutrition-plans/update/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "nutrition-plans",
+                "update",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"name\": \"Oats\",\n      \"category\": \"GRAINS\",\n      \"recommendation\": \"PREFER\",\n      \"reason\": \"High in soluble fiber\"\n    },\n    {\n      \"name\": \"Pickles\",\n      \"category\": \"SNACKS\",\n      \"recommendation\": \"AVOID\",\n      \"reason\": \"High sodium raises blood pressure\"\n    },\n    {\n      \"name\": \"Dates\",\n      \"category\": \"FRUITS\",\n      \"recommendation\": \"MODERATE\",\n      \"reason\": \"Natural sugar, keep portions small\"\n    }\n  ],\n  \"summary\": \"Updated after new readings.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "✗ Plan Without Health Profile (user 2)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/nutrition-plans/add/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "nutrition-plans",
+                "add",
+                "2"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"name\": \"Oats\",\n      \"category\": \"GRAINS\",\n      \"recommendation\": \"PREFER\",\n      \"reason\": \"High in soluble fiber\"\n    },\n    {\n      \"name\": \"Pickles\",\n      \"category\": \"SNACKS\",\n      \"recommendation\": \"AVOID\",\n      \"reason\": \"High sodium raises blood pressure\"\n    },\n    {\n      \"name\": \"Dates\",\n      \"category\": \"FRUITS\",\n      \"recommendation\": \"MODERATE\",\n      \"reason\": \"Natural sugar, keep portions small\"\n    }\n  ],\n  \"summary\": \"Focus on fiber and lean protein, limit salt and refined carbs.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "✗ Duplicate Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/nutrition-plans/add/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "nutrition-plans",
+                "add",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"name\": \"Oats\",\n      \"category\": \"GRAINS\",\n      \"recommendation\": \"PREFER\",\n      \"reason\": \"High in soluble fiber\"\n    },\n    {\n      \"name\": \"Oats\",\n      \"category\": \"GRAINS\",\n      \"recommendation\": \"PREFER\",\n      \"reason\": \"High in soluble fiber\"\n    }\n  ],\n  \"summary\": \"x\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "✗ Empty Items",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/nutrition-plans/add/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "nutrition-plans",
+                "add",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [],\n  \"summary\": \"x\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Deletes (run last)",
+      "item": [
+        {
+          "name": "✗ Delete Profile While Plan Exists",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/health-profiles/delete/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "health-profiles",
+                "delete",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Nutrition Plan",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/nutrition-plans/delete/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "nutrition-plans",
+                "delete",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Vital Sign",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/vital-signs/delete/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "vital-signs",
+                "delete",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Health Profile",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/health-profiles/delete/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "health-profiles",
+                "delete",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete User (removes remaining data)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/users/delete/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "users",
+                "delete",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
