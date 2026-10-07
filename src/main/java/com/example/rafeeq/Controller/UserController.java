@@ -2,6 +2,7 @@ package com.example.rafeeq.Controller;
 
 import com.example.rafeeq.Api.ApiException;
 import com.example.rafeeq.Api.ApiResponse;
+import com.example.rafeeq.DTO.MealSuitabilityRequestDTO;
 import com.example.rafeeq.DTO.UserRequestDTO;
 import com.example.rafeeq.DTO.UserResponseDTO;
 import com.example.rafeeq.Service.AIPlanService;
@@ -100,6 +101,12 @@ public class UserController {
     public ResponseEntity<?> generateNutritionShoppingList(@PathVariable Integer userId) {
 
         return ResponseEntity.status(200).body(aiPlanService.generateNutritionShoppingList(userId));
+    }
+
+    @PostMapping("/{userId}/meal-suitability-check")
+    public ResponseEntity<?> checkMealSuitability(@PathVariable Integer userId, @RequestBody @Valid MealSuitabilityRequestDTO request) {
+
+        return ResponseEntity.status(200).body(aiPlanService.checkMealSuitability(userId, request));
     }
 
 }

@@ -837,4 +837,120 @@ public class AIPlanService {
             throw new ApiException("Failed to generate nutrition shopping list");
         }
     }
+    public MealSuitabilityResponseDTO checkMealSuitability(Integer userId, MealSuitabilityRequestDTO request) {
+
+        User user = userRepository.findUserById(userId);
+
+        if (user == null) {
+            throw new ApiException("User not found");
+        }
+
+        HealthProfile healthProfile =
+                healthProfileRepository.findHealthProfileByUserId(userId);
+
+        if (healthProfile == null) {
+            throw new ApiException("Health profile not found");
+        }
+
+        NutritionPlan nutritionPlan =
+                nutritionPlanRepository.findNutritionPlanByUserId(userId);
+
+        if (nutritionPlan == null) {
+            throw new ApiException("Nutrition plan not found");
+        }
+
+        List<VitalSign> vitalSigns =
+                vitalSignRepository.findByUserIdOrderByMeasuredAtDesc(userId);
+
+        String vitalData = vitalSigns.stream()
+                .limit(5)
+                .map(vital -> {
+                    if ("BLOOD_PRESSURE".equals(vital.getType())) {
+                        return vital.getType()
+                                + ": "
+                                + vital.getSystolic()
+                                + "/"
+                                + vital.getDiastolic()
+                                + " "
+                                + vital.getUnit()
+                                + " - "
+                                + vital.getFlag();
+                    }
+
+                    return vital.getType()
+                            + ": "
+                            + vital.getValue()
+                            + " "
+                            + vital.getUnit()
+                            + " - "
+                            + vital.getFlag();
+                })
+                .toList()
+                .toString();
+
+        String prompt = """
+            Evaluate the following meal based on the user's current health profile,
+            latest vital signs, health conditions, and existing nutrition plan.
+
+            Important rules:
+            - Do not diagnose diseases.
+            - Do not prescribe medication.
+            - Do not claim that a meal is medically safe with certainty.
+            - Use the user's health context only to provide general dietary guidance.
+            - If information is uncertain, say that professional medical advice may be needed.
+            - Return all response values in Arabic.
+            - Keep JSON field names in English.
+            - status must be exactly one of:
+              SUITABLE
+              NEEDS_ADJUSTMENT
+              CHECK_NEEDED
+
+            Return JSON only in this format:
+
+            {
+              "status": "",
+              "summary": "",
+              "issues": [],
+              "suggestion": ""
+            }
+
+            Meal:
+            %s
+
+            Health Conditions:
+            %s
+
+            Activity Level:
+            %s
+
+            Exercise Risk:
+            %s
+
+            Latest Vital Signs:
+            %s
+
+            Current Nutrition Plan:
+            %s
+            """.formatted(
+                request.getMeal(),
+                healthProfile.getConditions(),
+                healthProfile.getActivityLevel(),
+                healthProfile.getExerciseRisk(),
+                vitalData,
+                nutritionPlan.getItems()
+        );
+
+        String aiResult = anthropicService.generate(prompt);
+
+        try {
+
+            return objectMapper.readValue(
+                    aiResult,
+                    MealSuitabilityResponseDTO.class
+            );
+
+        } catch (Exception e) {
+            throw new ApiException("Failed to analyze meal suitability");
+        }
+    }
 }
