@@ -4,6 +4,9 @@ import com.example.rafeeq.Api.ApiException;
 import com.example.rafeeq.Api.ApiResponse;
 import com.example.rafeeq.DTO.UserRequestDTO;
 import com.example.rafeeq.DTO.UserResponseDTO;
+import com.example.rafeeq.Service.AIPlanService;
+import com.example.rafeeq.Service.DailyTimelineService;
+import com.example.rafeeq.Service.HealthPlanStatusService;
 import com.example.rafeeq.Service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -19,7 +22,9 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-
+    private final HealthPlanStatusService healthPlanStatusService;
+    private final DailyTimelineService dailyTimelineService;
+    private final AIPlanService aiPlanService;
     @GetMapping("/get")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
 
@@ -79,4 +84,22 @@ public class UserController {
         return ResponseEntity.status(200)
                 .body(new ApiResponse("User deleted successfully"));
     }
+
+    @GetMapping("/{userId}/health-plan-status")
+    public ResponseEntity<?> getHealthPlanStatus(@PathVariable Integer userId) {
+
+        return ResponseEntity.status(200).body(healthPlanStatusService.getHealthPlanStatus(userId));
+    }
+
+    @GetMapping("/{userId}/daily-timeline")
+    public ResponseEntity<?> getDailyTimeline(@PathVariable Integer userId) {
+
+        return ResponseEntity.status(200).body(dailyTimelineService.getDailyTimeline(userId));
+    }
+    @PostMapping("/{userId}/nutrition-shopping-list")
+    public ResponseEntity<?> generateNutritionShoppingList(@PathVariable Integer userId) {
+
+        return ResponseEntity.status(200).body(aiPlanService.generateNutritionShoppingList(userId));
+    }
+
 }

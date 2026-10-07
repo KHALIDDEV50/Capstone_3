@@ -8,4 +8,8 @@ import java.util.Optional;
 public interface NutritionPlanRepository extends JpaRepository<NutritionPlan, Integer> {
 
     Optional<NutritionPlan> findByUserId(Integer userId);
+   NutritionPlan findNutritionPlanByUserId(Integer id);
+
+
+    NutritionPlan findNutritionPlanById(Integer integer);
 }

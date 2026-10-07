@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface ExercisePlanRepository extends JpaRepository<ExercisePlan, Integer> {
 
     Optional<ExercisePlan> findByUserId(Integer userId);
+
+    ExercisePlan findExercisePlanByUserId(Integer id);
 }
