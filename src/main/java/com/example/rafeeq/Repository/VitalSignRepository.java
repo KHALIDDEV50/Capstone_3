@@ -24,4 +24,6 @@ public interface VitalSignRepository extends JpaRepository<VitalSign, Integer> {
             Integer userId,
             String type
     );
+
+   List<VitalSign> findAllByUserIdOrderByMeasuredAtDesc(Integer id);
 }
