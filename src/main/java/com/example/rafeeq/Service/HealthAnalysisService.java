@@ -13,14 +13,16 @@ import com.example.rafeeq.Model.VitalSign;
 import com.example.rafeeq.Repository.HealthProfileRepository;
 import com.example.rafeeq.Repository.UserRepository;
 import com.example.rafeeq.Repository.VitalSignRepository;
-
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.List;
+
+
 
 @Service
 @AllArgsConstructor
@@ -29,6 +31,7 @@ public class HealthAnalysisService {
     private final UserRepository userRepository;
     private final HealthProfileRepository healthProfileRepository;
     private final VitalSignRepository vitalSignRepository;
+    private final TwilioService twilioService;
 
     // ==================== Health Risks ====================
 
@@ -1333,4 +1336,250 @@ public class HealthAnalysisService {
                 + " "
                 + vitalSign.getUnit();
     }
+
+    // ----------- last extra endpoint ----------
+
+    public Map<String, Object> getHealthMission(
+            Integer userId) {
+
+        User user =
+                userRepository.findById(userId)
+                        .orElseThrow(
+                                () -> new ApiException(
+                                        "User not found"
+                                )
+                        );
+
+        HealthProfile healthProfile =
+                healthProfileRepository
+                        .findByUserId(userId)
+                        .orElseThrow(
+                                () -> new ApiException(
+                                        "Health profile not found"
+                                )
+                        );
+
+        List<VitalSign> vitalSigns =
+                vitalSignRepository
+                        .findByUserIdOrderByMeasuredAtDesc(userId);
+
+        Map<String, Object> result =
+                new LinkedHashMap<>();
+
+        result.put(
+                "userId",
+                user.getId()
+        );
+
+        result.put(
+                "completed",
+                false
+        );
+
+        if ("SEDENTARY".equals(
+                healthProfile.getActivityLevel())) {
+
+            result.put(
+                    "mission",
+                    "Complete a 20-minute easy walk"
+            );
+
+            result.put(
+                    "category",
+                    "ACTIVITY"
+            );
+
+            result.put(
+                    "priority",
+                    "HIGH"
+            );
+
+            result.put(
+                    "reason",
+                    "Your current activity level is SEDENTARY."
+            );
+
+            return result;
+        }
+
+        VitalSign latestBloodPressure =
+                vitalSigns.stream()
+                        .filter(v ->
+                                "BLOOD_PRESSURE"
+                                        .equals(v.getType()))
+                        .findFirst()
+                        .orElse(null);
+
+        if (latestBloodPressure != null
+                && latestBloodPressure.getFlag() != null
+                && "HIGH".equals(
+                latestBloodPressure.getFlag())) {
+
+            result.put(
+                    "mission",
+                    "Complete a 10-minute relaxed walk"
+            );
+
+            result.put(
+                    "category",
+                    "CARDIOVASCULAR"
+            );
+
+            result.put(
+                    "priority",
+                    "MEDIUM"
+            );
+
+            result.put(
+                    "reason",
+                    "Your latest blood pressure reading is elevated."
+            );
+
+            return result;
+        }
+
+        VitalSign latestWeight =
+                vitalSigns.stream()
+                        .filter(v ->
+                                "WEIGHT".equals(v.getType()))
+                        .findFirst()
+                        .orElse(null);
+
+        if (latestWeight == null) {
+
+            result.put(
+                    "mission",
+                    "Record your current weight"
+            );
+
+            result.put(
+                    "category",
+                    "HEALTH_TRACKING"
+            );
+
+            result.put(
+                    "priority",
+                    "MEDIUM"
+            );
+
+            result.put(
+                    "reason",
+                    "Weight data is currently missing from your health profile."
+            );
+
+            return result;
+        }
+
+        result.put(
+                "mission",
+                "Complete a 20-minute moderate physical activity"
+        );
+
+        result.put(
+                "category",
+                "ACTIVITY"
+        );
+
+        result.put(
+                "priority",
+                "LOW"
+        );
+
+        result.put(
+                "reason",
+                "Maintain regular physical activity based on your current profile."
+        );
+
+        return result;
+    }
+
+    // ==================== WhatsApp Doctor Appointment Follow-Up ====================
+
+    public Map<String, Object> sendCriticalAppointmentWhatsApp(
+            Integer userId) {
+
+        User user =
+                userRepository.findById(userId)
+                        .orElseThrow(
+                                () -> new ApiException(
+                                        "User not found"
+                                )
+                        );
+
+        List<VitalSign> vitalSigns =
+                vitalSignRepository
+                        .findByUserIdOrderByMeasuredAtDesc(
+                                userId
+                        );
+
+        VitalSign criticalVital =
+                vitalSigns.stream()
+                        .filter(v ->
+                                "CRITICAL".equals(
+                                        v.getFlag()
+                                ))
+                        .findFirst()
+                        .orElseThrow(
+                                () -> new ApiException(
+                                        "No critical health measurement was found for this user"
+                                )
+                        );
+
+        String messageSid =
+                twilioService
+                        .sendCriticalAppointmentWhatsApp(
+                                user,
+                                criticalVital
+                        );
+
+        Map<String, Object> result =
+                new LinkedHashMap<>();
+
+        result.put(
+                "userId",
+                user.getId()
+        );
+
+        result.put(
+                "patientName",
+                user.getFullName()
+        );
+
+        result.put(
+                "sent",
+                true
+        );
+
+        result.put(
+                "priority",
+                "URGENT"
+        );
+
+        result.put(
+                "condition",
+                getConditionName(
+                        criticalVital.getType()
+                )
+        );
+
+        result.put(
+                "latestReading",
+                getReading(
+                        criticalVital
+                )
+        );
+
+        result.put(
+                "messageSid",
+                messageSid
+        );
+
+        result.put(
+                "message",
+                "🚨 Critical health alert sent to the patient via WhatsApp with a doctor appointment booking link."
+        );
+
+        return result;
+    }
+
 }

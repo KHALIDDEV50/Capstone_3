@@ -182,37 +182,27 @@ public class AIService {
             NutritionPlan plan =
                     nutritionPlanRepository
                             .findByUserId(userId)
-                            .orElseGet(NutritionPlan::new);
+                            .orElse(new NutritionPlan());
 
+            User user =
+                    userRepository.findById(userId)
+                            .orElseThrow(
+                                    () -> new ApiException(
+                                            "User not found"
+                                    )
+                            );
+
+            plan.setUser(user);
+            plan.setSummary(aiNutrition.getSummary());
+            plan.setReason(aiNutrition.getReason());
             plan.setItems(
                     objectMapper.writeValueAsString(
                             aiNutrition.getItems()
                     )
             );
-
-            plan.setSummary(
-                    aiNutrition.getSummary()
-            );
-
-            plan.setReason(
-                    aiNutrition.getReason()
-            );
-
             plan.setEvidence(
-                    objectMapper.writeValueAsString(
-                            evidence
-                    )
+                    objectMapper.writeValueAsString(evidence)
             );
-
-            if (plan.getUser() == null) {
-
-                plan.setUser(
-                        userRepository.findById(userId)
-                                .orElseThrow(
-                                        () -> new ApiException("User not found")
-                                )
-                );
-            }
 
             return nutritionPlanRepository.save(plan);
 
@@ -239,37 +229,27 @@ public class AIService {
             ExercisePlan plan =
                     exercisePlanRepository
                             .findByUserId(userId)
-                            .orElseGet(ExercisePlan::new);
+                            .orElse(new ExercisePlan());
 
-            plan.setGoal(
-                    aiExercise.getGoal()
-            );
+            User user =
+                    userRepository.findById(userId)
+                            .orElseThrow(
+                                    () -> new ApiException(
+                                            "User not found"
+                                    )
+                            );
 
+            plan.setUser(user);
+            plan.setGoal(aiExercise.getGoal());
+            plan.setSummary(aiExercise.getSummary());
             plan.setExercises(
                     objectMapper.writeValueAsString(
                             aiExercise.getExercises()
                     )
             );
-
-            plan.setSummary(
-                    aiExercise.getSummary()
-            );
-
             plan.setEvidence(
-                    objectMapper.writeValueAsString(
-                            evidence
-                    )
+                    objectMapper.writeValueAsString(evidence)
             );
-
-            if (plan.getUser() == null) {
-
-                plan.setUser(
-                        userRepository.findById(userId)
-                                .orElseThrow(
-                                        () -> new ApiException("User not found")
-                                )
-                );
-            }
 
             return exercisePlanRepository.save(plan);
 
@@ -286,8 +266,7 @@ public class AIService {
     }
 
     private NutritionPlanResponseDTO convertNutritionResponse(
-            NutritionPlan plan
-    ) {
+            NutritionPlan plan) {
 
         try {
 
@@ -315,14 +294,13 @@ public class AIService {
         } catch (Exception e) {
 
             throw new ApiException(
-                    "Failed to read nutrition plan"
+                    "Failed to convert nutrition plan response"
             );
         }
     }
 
     private ExercisePlanResponseDTO convertExerciseResponse(
-            ExercisePlan plan
-    ) {
+            ExercisePlan plan) {
 
         try {
 
@@ -350,81 +328,185 @@ public class AIService {
         } catch (Exception e) {
 
             throw new ApiException(
-                    "Failed to read exercise plan"
+                    "Failed to convert exercise plan response"
             );
         }
     }
 
-    // ==================== Patient Context (used to build the AI prompt) ====================
+    private Map<String, Object> buildPatientContext(
+            Integer userId) {
 
-    public Map<String, Object> buildPatientContext(Integer userId) {
+        User user =
+                userRepository.findById(userId)
+                        .orElseThrow(
+                                () -> new ApiException(
+                                        "User not found"
+                                )
+                        );
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApiException("User not found"));
+        HealthProfile healthProfile =
+                healthProfileRepository
+                        .findByUserId(userId)
+                        .orElseThrow(
+                                () -> new ApiException(
+                                        "Health profile not found"
+                                )
+                        );
 
-        HealthProfile healthProfile = healthProfileRepository.findByUserId(userId)
-                .orElseThrow(() -> new ApiException("Health profile not found"));
+        List<VitalSign> vitalSigns =
+                vitalSignRepository
+                        .findByUserIdOrderByMeasuredAtDesc(userId);
 
-        Map<String, Object> patient = new LinkedHashMap<>();
+        Map<String, Object> context =
+                new LinkedHashMap<>();
 
-        patient.put("age", calculateAge(user));
-        patient.put("gender", user.getGender());
+        context.put("userId", user.getId());
+        context.put("age", calculateAge(user));
+        context.put("gender", user.getGender());
+        context.put("activityLevel",
+                healthProfile.getActivityLevel());
+        context.put("conditions",
+                healthProfile.getConditions());
+        context.put("exerciseRisk",
+                healthProfile.getExerciseRisk());
+        context.put("heightCm",
+                healthProfile.getHeightCm());
 
-        patient.put("heightCm", healthProfile.getHeightCm());
-        patient.put("activityLevel", healthProfile.getActivityLevel());
-        patient.put("conditions", healthProfile.getConditions());
-        patient.put("exerciseRisk", healthProfile.getExerciseRisk());
+        List<Map<String, Object>> vitals =
+                vitalSigns.stream()
+                        .map(this::convertVital)
+                        .toList();
 
-        patient.put("latestBloodPressure",
-                getLatestVital(userId, "BLOOD_PRESSURE"));
+        context.put("vitalSigns", vitals);
 
-        patient.put("latestGlucose",
-                getLatestVital(userId, "GLUCOSE"));
-
-        patient.put("latestWeight",
-                getLatestVital(userId, "WEIGHT"));
-
-        patient.put("latestWaist",
-                getLatestVital(userId, "WAIST"));
-
-        patient.put("latestHeartRate",
-                getLatestVital(userId, "HEART_RATE"));
-
-        return patient;
+        return context;
     }
 
-    private Map<String, Object> getLatestVital(Integer userId, String type) {
+    private Map<String, Object> convertVital(
+            VitalSign vitalSign) {
 
-        Optional<VitalSign> optionalVital =
-                vitalSignRepository.findFirstByUserIdAndTypeOrderByMeasuredAtDesc(
-                        userId,
-                        type
-                );
+        Map<String, Object> vital =
+                new LinkedHashMap<>();
 
-        if (optionalVital.isEmpty()) {
-            return null;
-        }
+        vital.put("type", vitalSign.getType());
+        vital.put("value", vitalSign.getValue());
+        vital.put("systolic", vitalSign.getSystolic());
+        vital.put("diastolic", vitalSign.getDiastolic());
+        vital.put("unit", vitalSign.getUnit());
+        vital.put("flag", vitalSign.getFlag());
+        vital.put("measuredAt", vitalSign.getMeasuredAt());
 
-        VitalSign vital = optionalVital.get();
-
-        Map<String, Object> result = new LinkedHashMap<>();
-
-        result.put("type", vital.getType());
-        result.put("value", vital.getValue());
-        result.put("systolic", vital.getSystolic());
-        result.put("diastolic", vital.getDiastolic());
-        result.put("unit", vital.getUnit());
-        result.put("flag", vital.getFlag());
-        result.put("measuredAt", vital.getMeasuredAt());
-
-        return result;
+        return vital;
     }
 
-    private int calculateAge(User user) {
+    private Integer calculateAge(User user) {
 
         return java.time.Period.between(
                 user.getDateOfBirth(),
                 java.time.LocalDate.now()
         ).getYears();
+    }
+
+    // ----------- last extra endpoint ----------
+
+    public Map<String, Object> mealSwap(
+            Integer userId,
+            Map<String, Object> request) {
+
+        if (request == null ||
+                request.get("meal") == null) {
+
+            throw new ApiException(
+                    "Meal is required"
+            );
+        }
+
+        String meal =
+                request.get("meal").toString();
+
+        String reason =
+                request.get("reason") == null
+                        ? "healthier alternative"
+                        : request.get("reason").toString();
+
+        Map<String, Object> patientContext =
+                buildPatientContext(userId);
+
+        List<EvidenceReferenceDTO> evidence =
+                evidenceService.getRelevantEvidence(
+                        patientContext
+                );
+
+        if (evidence.isEmpty()) {
+            throw new ApiException(
+                    "No evidence references are available for this patient"
+            );
+        }
+
+        return anthropicService.generateMealSwap(
+                patientContext,
+                evidence,
+                meal,
+                reason
+        );
+    }
+
+    // ----------- last extra endpoint ----------
+
+    public Map<String, Object> adaptExercise(
+            Integer userId,
+            Map<String, Object> request) {
+
+        Map<String, Object> patientContext =
+                buildPatientContext(userId);
+
+        validateSafety(patientContext, userId);
+
+        ExercisePlan exercisePlan =
+                exercisePlanRepository
+                        .findByUserId(userId)
+                        .orElseThrow(
+                                () -> new ApiException(
+                                        "No exercise plan found for this user. Generate an AI plan first."
+                                )
+                        );
+
+        String difficulty =
+                request != null &&
+                        request.get("difficulty") != null
+                        ? request.get("difficulty").toString()
+                        : "TOO_HARD";
+
+        String availableMinutes =
+                request != null &&
+                        request.get("availableMinutes") != null
+                        ? request.get("availableMinutes").toString()
+                        : "20";
+
+        String equipment =
+                request != null &&
+                        request.get("equipment") != null
+                        ? request.get("equipment").toString()
+                        : "NONE";
+
+        List<EvidenceReferenceDTO> evidence =
+                evidenceService.getRelevantEvidence(
+                        patientContext
+                );
+
+        if (evidence.isEmpty()) {
+            throw new ApiException(
+                    "No evidence references are available for this patient"
+            );
+        }
+
+        return anthropicService.generateExerciseAdaptation(
+                patientContext,
+                evidence,
+                exercisePlan,
+                difficulty,
+                availableMinutes,
+                equipment
+        );
     }
 }

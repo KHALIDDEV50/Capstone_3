@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/v1/api")
 @AllArgsConstructor
@@ -77,5 +79,30 @@ public class HealthAnalysisController {
 
         return ResponseEntity.status(200)
                 .body(healthAnalysisService.checkEligibility(userId));
+    }
+
+    // ----------- last extra endpoint ----------
+
+    @GetMapping("/health-mission/{userId}")
+    public ResponseEntity<Map<String, Object>> getHealthMission(
+            @PathVariable Integer userId) {
+
+        return ResponseEntity.status(200)
+                .body(healthAnalysisService.getHealthMission(userId));
+    }
+
+    // ==================== WhatsApp Doctor Appointment Follow-Up ====================
+
+    @PostMapping("/doctor-appointments/send-whatsapp/{userId}")
+    public ResponseEntity<Map<String, Object>> sendCriticalAppointmentWhatsApp(
+            @PathVariable Integer userId) {
+
+        return ResponseEntity.status(200)
+                .body(
+                        healthAnalysisService
+                                .sendCriticalAppointmentWhatsApp(
+                                        userId
+                                )
+                );
     }
 }
